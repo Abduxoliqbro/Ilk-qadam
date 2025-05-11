@@ -205,6 +205,16 @@
     renderTasks();
     renderLeaderboard(); // Leaderboard'ni ko‘rsatish
 
+  const tg = window.Telegram.WebApp;
+  const user = tg.initDataUnsafe.user;
+
+  if (user) {
+    alert("Xush kelibsiz, " + user.first_name + "!");
+    console.log("Telegram foydalanuvchi:", user);
+  } else {
+    alert("Telegram orqali kirish talab qilinadi");
+  }
+
   </script>
 </body>
 </html>
