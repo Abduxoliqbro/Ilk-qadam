@@ -214,33 +214,50 @@
   } else {
     alert("Telegram orqali kirish talab qilinadi");
   }
-const tg = window.Telegram.WebApp;
-const user = tg.initDataUnsafe.user;
+  <!-- Firebase kutubxonalarini ulash -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js"></script>
 
-if (user) {
-  fetch("https://njfxaqmezonxkhojoedb.supabase.co/rest/v1/users", {
-    method: "POST",
-    headers: {
-      "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qZnhhcW1lem9ueGtob2pvZWRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5NTMxMzcsImV4cCI6MjA2MjUyOTEzN30.vr-3V7A-kkIGJodqU30q-S1Av8rVpoQeQiyyreT-7xE",
-      "Authorization": "Bearer YOUR_PUBLIC_ANON_KEY",
-      "Content-Type": "application/json",
-      "Prefer": "resolution=merge-duplicates"
-    },
-    body: JSON.stringify({
-      id: user.id,
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+  // 1. Firebase config (o‘zingiznikini yozing)
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3TTHsLTMsfscJG1X8mOn8J0eY4Mz_8bM",
+    authDomain: "https://yangiqadam-ad5d5.firebaseapp.com",
+    databaseURL: "https://yangiqadam-ad5d5-default-rtdb.firebaseio.com",
+    projectId: "yangiqadam-ad5d5",
+    storageBucket: "https://yangiqadam-ad5d5.firebasestorage.app",
+    messagingSenderId: "822741154851",
+    appId: "1:822741154851:web:12fd9f7d6db00ab4310596"
+  };
+
+  // 2. Firebase’ni ishga tushiramiz
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // 3. Telegram’dan foydalanuvchini olamiz
+  const tg = window.Telegram.WebApp;
+  const user = tg.initDataUnsafe.user;
+
+  // 4. Ma’lumotni Firebase’ga yozamiz
+  if (user) {
+    set(ref(db, 'users/' + user.id), {
       first_name: user.first_name,
-      username: user.username
+      username: user.username,
+      created_at: new Date().toISOString()
     })
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Foydalanuvchi saqlandi:", data);
-    alert("Xush kelibsiz, " + user.first_name + "!");
-  })
-  .catch(err => console.error("Xatolik:", err));
-} else {
-  alert("Telegram foydalanuvchi topilmadi");
-}
+    .then(() => {
+      console.log("Foydalanuvchi saqlandi");
+    })
+    .catch((error) => {
+      console.error("Xatolik:", error);
+    });
+  } else {
+    alert("Telegram foydalanuvchi topilmadi");
+  }
+</script>
 
   </script>
 </body>
