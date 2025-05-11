@@ -205,26 +205,22 @@
     renderTasks();
     renderLeaderboard(); // Leaderboard'ni ko‘rsatish
 
-  const tg = window.Telegram.WebApp;
-  const user = tg.initDataUnsafe.user;
+        <!-- Firebase kutubxonalarini ulaymiz -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h1>Telegram orqali tizimga kirish</h1>
+  <p>Foydalanuvchi ma’lumotlari Firebase’ga yoziladi...</p>
 
-  if (user) {
-    alert("Xush kelibsiz, " + user.first_name + "!");
-    console.log("Telegram foydalanuvchi:", user);
-  } else {
-    alert("Telegram orqali kirish talab qilinadi");
-  }
-  <!-- Firebase kutubxonalarini ulash -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js"></script>
+  <script>
+    // Telegram mini app obyekti
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe?.user;
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-
-  // 1. Firebase config (o‘zingiznikini yozing)
-  const firebaseConfig = {
-    apiKey: "AIzaSyD3TTHsLTMsfscJG1X8mOn8J0eY4Mz_8bM",
+    // Firebase config – bu joyga o‘z config'ingizni yozing!
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3TTHsLTMsfscJG1X8mOn8J0eY4Mz_8bM",
     authDomain: "https://yangiqadam-ad5d5.firebaseapp.com",
     databaseURL: "https://yangiqadam-ad5d5-default-rtdb.firebaseio.com",
     projectId: "yangiqadam-ad5d5",
@@ -233,31 +229,32 @@
     appId: "1:822741154851:web:12fd9f7d6db00ab4310596"
   };
 
-  // 2. Firebase’ni ishga tushiramiz
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+    // Firebase’ni ishga tushiramiz
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-  // 3. Telegram’dan foydalanuvchini olamiz
-  const tg = window.Telegram.WebApp;
-  const user = tg.initDataUnsafe.user;
+    if (user) {
+      const userId = user.id;
+      const userRef = database.ref("users/" + userId);
 
-  // 4. Ma’lumotni Firebase’ga yozamiz
-  if (user) {
-    set(ref(db, 'users/' + user.id), {
-      first_name: user.first_name,
-      username: user.username,
-      created_at: new Date().toISOString()
-    })
-    .then(() => {
-      console.log("Foydalanuvchi saqlandi");
-    })
-    .catch((error) => {
-      console.error("Xatolik:", error);
-    });
-  } else {
-    alert("Telegram foydalanuvchi topilmadi");
-  }
-</script>
+      userRef.set({
+        first_name: user.first_name,
+        username: user.username || null,
+        created_at: new Date().toISOString()
+      })
+      .then(() => {
+        alert("Xush kelibsiz, " + user.first_name + "!");
+        console.log("Ma’lumotlar Firebase’ga yozildi.");
+      })
+      .catch((error) => {
+        console.error("Yozishda xatolik:", error);
+        alert("Xatolik yuz berdi.");
+      });
+    } else {
+      alert("Telegram foydalanuvchisi topilmadi.");
+      console.log("user = ", user);
+    }
+}
 
   </script>
 </body>
