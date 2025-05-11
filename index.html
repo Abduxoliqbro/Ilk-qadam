@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Ilk Qadam – To-Do</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 200px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 8px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .delete-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .leaderboard {
+      margin-top: 20px;
+    }
+
+    .leaderboard li {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bugungi vazifalar</h1>
+
+  <form id="taskForm">
+    <input type="text" id="taskInput" placeholder="Vazifani yozing" />
+    <button type="submit">Qo‘shish</button>
+  </form>
+
+  <ul id="taskList">
+    <!-- tasklar shu yerga qo‘shiladi -->
+  </ul>
+
+  <h3>Statistika:</h3>
+  <p id="completedTasks">Bajarilgan: 0</p>
+  <p id="totalTasks">Jami: 0</p>
+
+  <h3>Reyting:</h3>
+  <ul id="leaderboard" class="leaderboard">
+    <!-- Reytinglar shu yerga qo‘shiladi -->
+  </ul>
+
+  <script>
+    const form = document.getElementById("taskForm");
+    const input = document.getElementById("taskInput");
+    const list = document.getElementById("taskList");
+    const completedTasksElem = document.getElementById("completedTasks");
+    const totalTasksElem = document.getElementById("totalTasks");
+    const leaderboardElem = document.getElementById("leaderboard");
+
+    // LocalStorage'dan task'larni va statistikani olish
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let userStats = JSON.parse(localStorage.getItem("userStats")) || {
+      completedTasks: 0,
+      totalTasks: 0,
+      points: 0
+    };
+    let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+    // Task'larni ko‘rsatish
+    function renderTasks() {
+      list.innerHTML = "";
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.addEventListener("change", function () {
+          const prevStatus = task.completed;
+          task.completed = checkbox.checked;
+
+          if (task.completed && !prevStatus) {
+            userStats.points += 10; // Bajarilgan task uchun ball qo‘shiladi
+          } else if (!task.completed && prevStatus) {
+            userStats.points -= 10; // Bajarilgan taskni qayta bekor qilganda ball kamayadi
+          }
+
+          updateStats();
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+          localStorage.setItem("userStats", JSON.stringify(userStats));
+          renderTasks(); // Task'ni yangilash
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "O‘chirish";
+        deleteBtn.classList.add("delete-btn");
+        deleteBtn.addEventListener("click", function () {
+          tasks = tasks.filter(t => t !== task);
+          if (task.completed) {
+            userStats.completedTasks -= 1; // O‘chirishda bajarilgan taskni kamaytirish
+            userStats.points -= 10; // Ballni kamaytirish
+          }
+          updateStats();
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+          localStorage.setItem("userStats", JSON.stringify(userStats));
+          renderTasks(); // Task'ni o‘chirish
+        });
+
+        li.appendChild(checkbox);
+        li.append(" " + task.name);
+        li.appendChild(deleteBtn);
+        if (task.completed) {
+          li.classList.add("completed");
+        }
+        list.appendChild(li);
+      });
+    }
+
+    // Statistika yangilash
+    function updateStats() {
+      userStats.totalTasks = tasks.length;
+      userStats.completedTasks = tasks.filter(task => task.completed).length;
+
+      completedTasksElem.textContent = `Bajarilgan: ${userStats.completedTasks}`;
+      totalTasksElem.textContent = `Jami: ${userStats.totalTasks}`;
+    }
+
+    // Reytingni yangilash va saqlash
+    function updateLeaderboard(username, points) {
+      leaderboard.push({ username, points });
+      leaderboard.sort((a, b) => b.points - a.points); // Ballar bo‘yicha saralash
+      localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+      renderLeaderboard();
+    }
+
+    // Leaderboard'ni ko‘rsatish
+    function renderLeaderboard() {
+      leaderboardElem.innerHTML = "";
+      leaderboard.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.username}: ${entry.points} ball`;
+        leaderboardElem.appendChild(li);
+      });
+    }
+
+    // Form submit qilinganida task qo‘shish
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const newTask = input.value.trim();
+      if (newTask !== "") {
+        const task = { name: newTask, completed: false };
+        tasks.push(task);
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        renderTasks(); // Yangilangan task'larni ko‘rsatish
+
+        updateStats();
+        input.value = "";
+      }
+    });
+
+    // Ilova yuklanganda boshlang‘ich task'larni ko‘rsatish
+    renderTasks();
+    renderLeaderboard(); // Leaderboard'ni ko‘rsatish
+
+  </script>
+</body>
+</html>
