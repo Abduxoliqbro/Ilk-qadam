@@ -203,40 +203,42 @@
 
     // Ilova yuklanganda boshlang‘ich task'larni ko‘rsatish
     renderTasks();
-    renderLeaderboard(); // Leaderboard'ni ko‘rsatish
+    renderLeaderboard(); // Leaderboard'ni ko‘rsatish  
+} <!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Ilk Qadam</title>
 
-        <!-- Firebase kutubxonalarini ulaymiz -->
+  <!-- Firebase kutubxonalari -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
-  <h1>Telegram orqali tizimga kirish</h1>
-  <p>Foydalanuvchi ma’lumotlari Firebase’ga yoziladi...</p>
+  <h1>Foydalanuvchi ma'lumotlari yozilmoqda...</h1>
 
   <script>
-    // Telegram mini app obyekti
+    // Telegram foydalanuvchisini olish
     const tg = window.Telegram.WebApp;
     const user = tg.initDataUnsafe?.user;
 
-    // Firebase config – bu joyga o‘z config'ingizni yozing!
+    // Firebase config (siz yuborganingiz)
     const firebaseConfig = {
       apiKey: "AIzaSyD3TTHsLTMsfscJG1X8mOn8J0eY4Mz_8bM",
-    authDomain: "https://yangiqadam-ad5d5.firebaseapp.com",
-    databaseURL: "https://yangiqadam-ad5d5-default-rtdb.firebaseio.com",
-    projectId: "yangiqadam-ad5d5",
-    storageBucket: "https://yangiqadam-ad5d5.firebasestorage.app",
-    messagingSenderId: "822741154851",
-    appId: "1:822741154851:web:12fd9f7d6db00ab4310596"
-  };
+      authDomain: "yangiqadam-ad5d5.firebaseapp.com",
+      databaseURL: "https://yangiqadam-ad5d5-default-rtdb.firebaseio.com",
+      projectId: "yangiqadam-ad5d5",
+      storageBucket: "yangiqadam-ad5d5.firebasestorage.app",
+      messagingSenderId: "822741154851",
+      appId: "1:822741154851:web:12fd9f7d6db00ab4310596"
+    };
 
-    // Firebase’ni ishga tushiramiz
+    // Firebase’ni ishga tushirish
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
     if (user) {
-      const userId = user.id;
-      const userRef = database.ref("users/" + userId);
-
+      const userRef = database.ref("users/" + user.id);
       userRef.set({
         first_name: user.first_name,
         username: user.username || null,
@@ -244,17 +246,18 @@
       })
       .then(() => {
         alert("Xush kelibsiz, " + user.first_name + "!");
-        console.log("Ma’lumotlar Firebase’ga yozildi.");
+        console.log("Firebase’ga yozildi:", user);
       })
       .catch((error) => {
-        console.error("Yozishda xatolik:", error);
-        alert("Xatolik yuz berdi.");
+        console.error("Firebase yozishda xatolik:", error);
       });
     } else {
-      alert("Telegram foydalanuvchisi topilmadi.");
+      alert("Telegram foydalanuvchisi aniqlanmadi");
       console.log("user = ", user);
     }
-}
+  </script>
+</body>
+</html>
 
   </script>
 </body>
