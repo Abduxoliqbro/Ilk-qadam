@@ -1,17 +1,30 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ilk Qadam</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    #welcome { font-size: 24px; }
-  </style>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script defer src="main.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-  <div id="welcome">Telegram Mini Appga xush kelibsiz!</div>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<body class="bg-gray-100 text-gray-900">
+  <div class="max-w-md mx-auto py-6 px-4">
+    <h1 class="text-3xl font-bold mb-4 text-center">🌟 Ilk Qadam</h1>
 
-  <script src="main.js"></script>
+    <div id="user-info" class="text-center mb-6"></div>
+
+    <h2 class="text-xl font-semibold mb-2">📋 Majburiy vazifalar</h2>
+    <ul id="task-list" class="space-y-3">
+      <!-- Har bir vazifa bu yerga JS orqali qo‘shiladi -->
+    </ul>
+
+    <h2 class="text-xl font-semibold mt-8 mb-2">➕ Shaxsiy vazifa</h2>
+    <input type="text" id="custom-task" class="w-full px-3 py-2 border rounded mb-2" placeholder="Masalan: Kitob o'qish">
+    <button id="add-task" class="bg-blue-500 text-white w-full py-2 rounded">Qo‘shish</button>
+
+    <ul id="custom-task-list" class="mt-4 space-y-2"></ul>
+  </div>
 </body>
 </html>
