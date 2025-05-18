@@ -1,64 +1,50 @@
-// main.js
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-// Telegram foydalanuvchisini aniqlash
-const tg = window.Telegram.WebApp;
-const user = tg.initDataUnsafe.user;
+// Supabase konfiguratsiyasi
+const SUPABASE_URL = 'https://sppcxqqczppppykviqfd.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwcGN4cXFjenBwcHB5a3ZpcWZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NTUwODgsImV4cCI6MjA2MzEzMTA4OH0.W-W9pxa6jmcfh_EcVu1Qcu39fFlMWkKbSGAbHRKxDtU'
 
-// Foydalanuvchi ismini ko‘rsatish
-const userInfo = document.getElementById("user-info");
-if (user && user.first_name) {
-  userInfo.textContent = `👋 Salom, ${user.first_name}!`;
-}
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-// Majburiy vazifalar
-const mandatoryTasks = [
-  { id: 1, title: "Erta turish", points: 20 },
-  { id: 2, title: "Badan tarbiya qilish", points: 15 },
-  { id: 3, title: "Kitob o‘qish", points: 40 },
-  { id: 4, title: "Podkast tinglash", points: 15 },
-  { id: 5, title: "Yozish", points: 50 },
-  { id: 6, title: "Ijtimoiy tarmoqni cheklash", points: 30 },
-  { id: 7, title: "23:59 gacha uxlash", points: 50 },
-];
+const form = document.getElementById('task-form')
+const statusDiv = document.getElementById('status')
 
-// Har bir vazifa uchun tugma
-const taskList = document.getElementById("task-list");
+// Telegramdan kelgan user ma’lumotlari (keyinchalik to‘ldiriladi)
+const telegram_id = 123456789
+const full_name = "Foydalanuvchi"
 
-mandatoryTasks.forEach(task => {
-  const li = document.createElement("li");
-  li.className = "bg-white p-4 rounded shadow flex justify-between items-center";
+form.addEventListener('submit', async (e) => {
+  e.preventDefault()
 
-  li.innerHTML = `
-    <div>
-      <p class="font-semibold">${task.title}</p>
-      <p class="text-sm text-gray-500">${task.points} ball</p>
-    </div>
-    <button class="bg-green-500 text-white px-3 py-1 rounded" onclick="submitTask(${task.id})">✅</button>
-  `;
+  const selectedTasks = Array.from(form.elements['tasks'])
+    .filter(input => input.checked)
+    .map(input => input.value)
 
-  taskList.appendChild(li);
-});
-
-// Vazifa topshirilganini ko‘rsatish (hozircha console.log orqali)
-function submitTask(id) {
-  const task = mandatoryTasks.find(t => t.id === id);
-  alert(`✅ "${task.title}" uchun ${task.points} ball topshirildi!`);
-  // Bu yerda Firebase'ga yozish bo‘ladi (keyingi bosqich)
-}
-
-// Shaxsiy vazifalar (reytingga ta’sir qilmaydi)
-const customInput = document.getElementById("custom-task");
-const customList = document.getElementById("custom-task-list");
-const addTaskBtn = document.getElementById("add-task");
-
-addTaskBtn.addEventListener("click", () => {
-  const value = customInput.value.trim();
-  if (value) {
-    const li = document.createElement("li");
-    li.className = "bg-yellow-100 px-3 py-2 rounded";
-    li.textContent = `📝 ${value}`;
-    customList.appendChild(li);
-    customInput.value = "";
+  let totalPoints = 0
+  const taskPoints = {
+    early_wakeup: 20,
+    exercise: 15,
+    reading: 40,
+    podcast: 15,
+    writing: 50,
+    limit_social: 30,
+    sleep_before_midnight: 50,
   }
-});
 
+  selectedTasks.forEach(task => totalPoints += taskPoints[task] || 0)
+
+  const { error } = await supabase.from('tasks').insert([{
+    telegram_id,
+    full_name,
+    tasks: selectedTasks,
+    total_points: totalPoints,
+    date: new Date().toISOString().split('T')[0]
+  }])
+
+  if (error) {
+    statusDiv.innerText = "❌ Xatolik: " + error.message
+  } else {
+    statusDiv.innerText = "✅ Ballar muvaffaqiyatli yuborildi!"
+    form.reset()
+  }
+})

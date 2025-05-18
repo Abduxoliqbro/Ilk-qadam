@@ -1,30 +1,30 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ilk Qadam</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script defer src="main.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="bg-gray-100 text-gray-900">
-  <div class="max-w-md mx-auto py-6 px-4">
-    <h1 class="text-3xl font-bold mb-4 text-center">🌟 Ilk Qadam</h1>
+<body>
+  <div class="container">
+    <h1>📋 Ilk Qadam</h1>
+    <p>Quyidagi majburiy vazifalardan bajarganlaringizni belgilang:</p>
 
-    <div id="user-info" class="text-center mb-6"></div>
+    <form id="task-form">
+      <label><input type="checkbox" name="tasks" value="early_wakeup"> Erta turish</label><br>
+      <label><input type="checkbox" name="tasks" value="exercise"> Badan tarbiya</label><br>
+      <label><input type="checkbox" name="tasks" value="reading"> Kitob o‘qish</label><br>
+      <label><input type="checkbox" name="tasks" value="podcast"> Podkast tinglash</label><br>
+      <label><input type="checkbox" name="tasks" value="writing"> Yozish</label><br>
+      <label><input type="checkbox" name="tasks" value="limit_social"> Ijtimoiy tarmoq cheklash</label><br>
+      <label><input type="checkbox" name="tasks" value="sleep_before_midnight"> 23:59 gacha uxlash</label><br>
+      <button type="submit">Ball yuborish</button>
+    </form>
 
-    <h2 class="text-xl font-semibold mb-2">📋 Majburiy vazifalar</h2>
-    <ul id="task-list" class="space-y-3">
-      <!-- Har bir vazifa bu yerga JS orqali qo‘shiladi -->
-    </ul>
-
-    <h2 class="text-xl font-semibold mt-8 mb-2">➕ Shaxsiy vazifa</h2>
-    <input type="text" id="custom-task" class="w-full px-3 py-2 border rounded mb-2" placeholder="Masalan: Kitob o'qish">
-    <button id="add-task" class="bg-blue-500 text-white w-full py-2 rounded">Qo‘shish</button>
-
-    <ul id="custom-task-list" class="mt-4 space-y-2"></ul>
+    <div id="status"></div>
   </div>
+
+  <script type="module" src="main.js"></script>
 </body>
 </html>
