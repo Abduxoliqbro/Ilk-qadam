@@ -1,30 +1,48 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ilk Qadam</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kundalik Vazifalar</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>📋 Ilk Qadam</h1>
-    <p>Quyidagi majburiy vazifalardan bajarganlaringizni belgilang:</p>
+    <div class="container">
+        <header>
+            <h1>Kundalik Vazifalar</h1>
+            <div class="user-info">
+                <img id="user-photo" src="" alt="User photo">
+                <span id="user-name"></span>
+            </div>
+        </header>
 
-    <form id="task-form">
-      <label><input type="checkbox" name="tasks" value="early_wakeup"> Erta turish</label><br>
-      <label><input type="checkbox" name="tasks" value="exercise"> Badan tarbiya</label><br>
-      <label><input type="checkbox" name="tasks" value="reading"> Kitob o‘qish</label><br>
-      <label><input type="checkbox" name="tasks" value="podcast"> Podkast tinglash</label><br>
-      <label><input type="checkbox" name="tasks" value="writing"> Yozish</label><br>
-      <label><input type="checkbox" name="tasks" value="limit_social"> Ijtimoiy tarmoq cheklash</label><br>
-      <label><input type="checkbox" name="tasks" value="sleep_before_midnight"> 23:59 gacha uxlash</label><br>
-      <button type="submit">Ball yuborish</button>
-    </form>
+        <div class="tabs">
+            <button class="tab active" onclick="openTab('daily')">Kunlik</button>
+            <button class="tab" onclick="openTab('weekly')">Haftalik</button>
+            <button class="tab" onclick="openTab('monthly')">Oylik</button>
+        </div>
 
-    <div id="status"></div>
-  </div>
+        <div id="daily" class="tab-content active">
+            <h2>Majburiy Vazifalar</h2>
+            <ul class="task-list" id="mandatory-tasks"></ul>
+            
+            <h2>Shaxsiy Vazifalar</h2>
+            <ul class="task-list" id="custom-tasks"></ul>
+            <button onclick="addCustomTask()">+ Vazifa Qo'shish</button>
+        </div>
 
-  <script type="module" src="main.js"></script>
+        <div id="weekly" class="tab-content">
+            <h2>Haftalik Reyting</h2>
+            <div id="weekly-rating"></div>
+        </div>
+
+        <div id="monthly" class="tab-content">
+            <h2>Oylik Reyting</h2>
+            <div id="monthly-rating"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
