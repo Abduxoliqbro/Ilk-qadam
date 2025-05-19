@@ -151,6 +151,42 @@ function saveTaskCompletion(userId, taskId, completed) {
     completed: completed,
     timestamp: firebase.database.ServerValue.TIMESTAMP
   });
+  // 1. Foydalanuvchi kirganda darhol qayd qilish
+recordLogin(user.id);
+
+// 2. Har soat faollikni tekshirish
+setInterval(checkHourlyActivity, 60 * 60 * 1000); // Har soat
+
+function checkHourlyActivity() {
+  const now = new Date();
+  const hours = now.getUTCHours() + 5; // Toshkent vaqti
+  
+  if (hours === 20) { // Soat 20:00
+    updateDailyStats();
+  }
+}
+
+// 3. Kunlik statistikani hisoblash
+function updateDailyStats() {
+  const today = getCurrentDate();
+  
+  database.ref('user_activities').once('value').then(snapshot => {
+    const activities = snapshot.val() || {};
+    let dailyCount = 0;
+    
+    Object.keys(activities).forEach(userId => {
+      if (activities[userId].last_login) {
+        const loginDate = new Date(activities[userId].last_login).toISOString().split('T')[0];
+        if (loginDate === today) dailyCount++;
+      }
+    });
+    
+    database.ref('daily_stats/' + today).set({
+      active_users: dailyCount,
+      updated_at: firebase.database.ServerValue.TIMESTAMP
+    });
+  });
+}
 }
 // Dasturni ishga tushiramiz
 window.onload = initApp;
