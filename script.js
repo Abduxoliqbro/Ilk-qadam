@@ -1,3 +1,42 @@
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set } from "firebase/database";
+
+const firebaseConfig = {
+  databaseURL: "https://ilk-gadam-deep-default-rtdb.firebaseio.com/"
+};
+Telegram.WebApp.ready();
+const user = Telegram.WebApp.initDataUnsafe.user;
+
+set(ref(db, 'users/' + user.id), {
+  name: user.first_name,
+  username: user.username || '',
+  last_login: serverTimestamp()
+});
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function writeUserData() {
+  // Users ma'lumotlarini yozish
+  set(ref(db, 'users/123456'), {
+    name: "Foydalanuvchi Ismi",
+    username: "foydalanuvchi123",
+    last_login: Date.now(),
+    tasks: {
+      completed: 3,
+      last_completed: Date.now()
+    }
+  });
+
+  // Daily stats yozish
+  set(ref(db, 'daily_stats/2024-04-05'), {
+    active_users: 15,
+    completed_tasks: 42
+  });
+}
+
+// Funksiyani chaqirish
+writeUserData();
 // Asosiy o'zgaruvchilar
 const mandatoryTasks = [
     { id: 1, name: "Erta turish (06:00-08:00)", completed: false, points: 10 },
@@ -32,6 +71,39 @@ function initUser() {
         document.getElementById('user-photo').src = userData.photoUrl;
     }
 }
+// Firebase konfiguratsiyasi
+const firebaseConfig = {
+  databaseURL: "https://ilk-gadam-deep-default-rtdb.firebaseio.com"
+};
+
+// Firebase-ni ishga tushirish
+const app = firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// Foydalanuvchi qo'shish funksiyasi
+function addUser(userId, userData) {
+  database.ref('users/' + userId).set(userData)
+    .then(() => console.log("Foydalanuvchi qo'shildi"))
+    .catch(error => console.error("Xato:", error));
+}
+
+// Misol: Telegram foydalanuvchisini qo'shish
+Telegram.WebApp.ready();
+const tgUser = Telegram.WebApp.initDataUnsafe.user;
+
+const userData = {
+  name: tgUser.first_name,
+  username: tgUser.username || '',
+  last_login: firebase.database.ServerValue.TIMESTAMP,
+  tasks: {
+    completed: 0,
+    last_completed: null
+  }
+};
+import { serverTimestamp } from "firebase/database";
+
+set(ref(db, 'users/123456/last_login'), serverTimestamp());
+addUser(tgUser.id.toString(), userData);
 
 // Vazifalarni ekranga chiqarish
 function renderTasks() {
