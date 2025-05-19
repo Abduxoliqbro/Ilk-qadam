@@ -146,6 +146,11 @@ function checkTime() {
         alert("Reyting yangilandi!");
     }
 }
-
+function saveTaskCompletion(userId, taskId, completed) {
+  database.ref('users/' + userId + '/tasks/' + taskId).set({
+    completed: completed,
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  });
+}
 // Dasturni ishga tushiramiz
 window.onload = initApp;
