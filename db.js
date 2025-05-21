@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
 // MongoDB ulanish stringi (Atlasdan olingan stringni qo'ying)
-const uri = "mongodb+srv://<db_username>:<db_password>@cluster0.ntykqym.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb+srv://<db_abduxoliq_tojiboyev>:<db_gulnora1971>@cluster0.ntykqym.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // MongoDB client obyekti
 const client = new MongoClient(uri, {
