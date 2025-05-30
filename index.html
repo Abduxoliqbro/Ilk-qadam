@@ -3,150 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odatlar & Vazifalar</title>
+    <title>Ilk qadam - Vazifalar va Odatlar</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Kirish sahifasi -->
-        <div class="page" id="login-page">
-            <div class="logo">
-                <i class="fas fa-tasks"></i>
-                <h1>Odatlar & Vazifalar</h1>
-            </div>
-            <div class="login-form">
-                <input type="text" id="username" placeholder="Foydalanuvchi nomi">
-                <input type="password" id="password" placeholder="Parol">
-                <button id="login-btn">Kirish</button>
-                <button id="register-btn">Ro'yxatdan o'tish</button>
-            </div>
+    <div class="container">
+        <!-- Asosiy menyu -->
+        <div class="main-menu" id="mainMenu">
+            <h1>Ilk qadam</h1>
+            <button onclick="showPersonalTasks()">Shaxsiy Vazifalar</button>
+            <button onclick="showGroupSection()">Guruhlar</button>
+            <button onclick="showStatistics()">Statistika</button>
+            <button onclick="showRating()">Reyting</button>
         </div>
 
-        <!-- Asosiy sahifa -->
-        <div class="page hidden" id="main-page">
-            <header>
-                <div class="user-info">
-                    <img src="assets/images/user-avatar.png" alt="User" id="user-avatar">
-                    <span id="user-name"></span>
-                    <span class="points" id="user-points">0 ball</span>
-                </div>
-                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
-            </header>
-
-            <nav class="tabs">
-                <button class="tab-btn active" data-tab="habits"><i class="fas fa-list-check"></i> Odatlar</button>
-                <button class="tab-btn" data-tab="tasks"><i class="fas fa-tasks"></i> Vazifalar</button>
-                <button class="tab-btn" data-tab="groups"><i class="fas fa-users"></i> Guruhlar</button>
-                <button class="tab-btn" data-tab="ranking"><i class="fas fa-trophy"></i> Reyting</button>
-            </nav>
-
-            <div class="tab-content active" id="habits-tab">
-                <h2>Mening odatlarim</h2>
-                <div class="habits-list" id="habits-list">
-                    <!-- Odatlar ro'yxati JavaScript orqali to'ldiriladi -->
-                </div>
-                <button class="add-btn" id="add-habit-btn"><i class="fas fa-plus"></i> Yangi odat</button>
+        <!-- Shaxsiy vazifalar bo'limi -->
+        <div class="section" id="personalTasks" style="display:none;">
+            <h2>Shaxsiy Vazifalar</h2>
+            <div class="task-form">
+                <input type="text" id="taskInput" placeholder="Yangi vazifa...">
+                <button onclick="addTask()">Qo'shish</button>
             </div>
-
-            <div class="tab-content" id="tasks-tab">
-                <h2>Mening vazifalarim</h2>
-                <div class="tasks-list" id="tasks-list">
-                    <!-- Vazifalar ro'yxati JavaScript orqali to'ldiriladi -->
-                </div>
-                <button class="add-btn" id="add-task-btn"><i class="fas fa-plus"></i> Yangi vazifa</button>
-            </div>
-
-            <div class="tab-content" id="groups-tab">
-                <h2>Guruhlar</h2>
-                <div class="groups-actions">
-                    <button class="action-btn" id="create-group-btn"><i class="fas fa-plus"></i> Guruh yaratish</button>
-                    <button class="action-btn" id="join-group-btn"><i class="fas fa-search"></i> Guruh qidirish</button>
-                </div>
-                <div class="groups-list" id="groups-list">
-                    <!-- Guruhlar ro'yxati JavaScript orqali to'ldiriladi -->
-                </div>
-            </div>
-
-            <div class="tab-content" id="ranking-tab">
-                <h2>Reyting</h2>
-                <div class="ranking-tabs">
-                    <button class="ranking-tab-btn active" data-ranking-tab="global">Umumiy reyting</button>
-                    <button class="ranking-tab-btn" data-ranking-tab="group">Guruh reytingi</button>
-                </div>
-                <div class="ranking-list active" id="global-ranking">
-                    <!-- Umumiy reyting JavaScript orqali to'ldiriladi -->
-                </div>
-                <div class="ranking-list" id="group-ranking">
-                    <!-- Guruh reytingi JavaScript orqali to'ldiriladi -->
-                </div>
-            </div>
+            <div class="task-list" id="taskList"></div>
+            <button onclick="backToMain()">Orqaga</button>
         </div>
 
-        <!-- Modal oynalar -->
-        <div class="modal hidden" id="add-habit-modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h3>Yangi odat qo'shish</h3>
-                <input type="text" id="habit-name" placeholder="Odat nomi">
-                <select id="habit-frequency">
-                    <option value="daily">Har kuni</option>
-                    <option value="weekly">Haftasiga</option>
-                    <option value="monthly">Oygina</option>
-                </select>
-                <input type="number" id="habit-points" placeholder="Ball (default: 10)">
-                <button id="save-habit-btn">Saqlash</button>
-            </div>
+        <!-- Guruhlar bo'limi -->
+        <div class="section" id="groupSection" style="display:none;">
+            <h2>Guruhlar</h2>
+            <button onclick="showCreateGroup()">Guruh Yaratish</button>
+            <button onclick="showJoinGroup()">Guruhga Qo'shilish</button>
+            <div id="groupContent"></div>
+            <button onclick="backToMain()">Orqaga</button>
         </div>
 
-        <div class="modal hidden" id="add-task-modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h3>Yangi vazifa qo'shish</h3>
-                <input type="text" id="task-name" placeholder="Vazifa nomi">
-                <textarea id="task-description" placeholder="Tavsif"></textarea>
-                <input type="date" id="task-deadline">
-                <input type="number" id="task-points" placeholder="Ball (default: 20)">
-                <button id="save-task-btn">Saqlash</button>
-            </div>
+        <!-- Statistika bo'limi -->
+        <div class="section" id="statistics" style="display:none;">
+            <h2>Statistika</h2>
+            <div id="statsContent"></div>
+            <button onclick="backToMain()">Orqaga</button>
         </div>
 
-        <div class="modal hidden" id="create-group-modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h3>Yangi guruh yaratish</h3>
-                <input type="text" id="group-name" placeholder="Guruh nomi">
-                <textarea id="group-description" placeholder="Guruh tavsifi"></textarea>
-                <button id="save-group-btn">Yaratish</button>
-            </div>
-        </div>
-
-        <div class="modal hidden" id="join-group-modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h3>Guruh qidirish</h3>
-                <input type="text" id="group-search" placeholder="Guruh nomi yoki ID">
-                <div class="search-results" id="group-search-results">
-                    <!-- Qidiruv natijalari -->
-                </div>
-            </div>
-        </div>
-
-        <div class="modal hidden" id="group-details-modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h3 id="group-details-title">Guruh ma'lumotlari</h3>
-                <p id="group-details-description"></p>
-                <div class="group-members" id="group-members-list">
-                    <!-- Guruh a'zolari -->
-                </div>
-                <div class="group-tasks" id="group-tasks-list">
-                    <!-- Guruh vazifalari -->
-                </div>
-                <div class="group-actions" id="group-actions">
-                    <!-- Guruh amallari (qo'shilish/chiqish/vazifa qo'shish) -->
-                </div>
-            </div>
+        <!-- Reyting bo'limi -->
+        <div class="section" id="rating" style="display:none;">
+            <h2>Reyting</h2>
+            <div id="ratingContent"></div>
+            <button onclick="backToMain()">Orqaga</button>
         </div>
     </div>
 
